@@ -1,11 +1,42 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
+    android:orientation="horizontal"
+    tools:context=".MainActivity"
+    >
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/social_button_height"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/defaultCount"
+        android:id="@+id/textViewHatenaBookmark"
+        android:background="#ff2c6ebd"
+        android:textColor="#FFFFFF"
+        android:layout_weight="1"
+        android:gravity="center" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/social_button_height"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/defaultCount"
+        android:id="@+id/textViewTwitter"
+        android:layout_weight="1"
+        android:background="#ff55acee"
+        android:textColor="#FFFFFF"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/social_button_height"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/defaultCount"
+        android:id="@+id/textView"
+        android:background="#FFFFFF"
+        android:textColor="#ff5700"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+</LinearLayout>

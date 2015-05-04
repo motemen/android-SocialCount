@@ -6,10 +6,16 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-public class HatenaBookmark {
-    OkHttpClient client = new OkHttpClient();
+import java.io.IOException;
 
-    int fetchCount(String url) throws java.io.IOException {
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class HatenaBookmark extends Source {
+    @Override
+    Integer fetchCountSync(String url) throws java.io.IOException {
         Uri uri = new Uri.Builder()
                 .scheme("http")
                 .authority("api.b.st-hatena.com")
@@ -22,6 +28,6 @@ public class HatenaBookmark {
                 .build();
 
         Response response = client.newCall(request).execute();
-        return Integer.parseInt(response.body().string());
+        return Integer.decode(response.body().string());
     }
 }

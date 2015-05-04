@@ -8,10 +8,10 @@ import static junit.framework.Assert.assertTrue;
 import android.support.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-public class HatenaBookmarkTest {
+public class TwitterTest {
     @Test
     public void fetchCountSync() throws java.io.IOException {
-        Integer count = new HatenaBookmark().fetchCountSync("http://www.example.com/");
+        Integer count = new Twitter().fetchCountSync("http://www.example.com/");
         assertTrue(count > 0);
     }
 }
