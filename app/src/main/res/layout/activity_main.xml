@@ -1,42 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
     android:orientation="horizontal"
+    android:id="@+id/backgroundOverlay"
     tools:context=".MainActivity"
     >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/social_button_height"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+    <Button
         android:text="@string/default_count"
-        android:id="@+id/textViewHatenaBookmark"
-        android:background="#ff2c6ebd"
+        android:id="@+id/hatenaBookmarkCount"
+        android:background="@drawable/hatena_bookmark_button_bg"
         android:textColor="#FFFFFF"
-        android:layout_weight="1"
-        android:gravity="center" />
+        style="@style/social_count_button" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/social_button_height"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+    <Button
         android:text="@string/default_count"
-        android:id="@+id/textViewTwitter"
-        android:layout_weight="1"
-        android:background="#ff55acee"
+        android:id="@+id/twitterCount"
+        android:background="@drawable/twitter_button_bg"
         android:textColor="#FFFFFF"
-        android:gravity="center" />
+        style="@style/social_count_button" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/social_button_height"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+    <Button
         android:text="@string/default_count"
-        android:id="@+id/textViewReddit"
-        android:background="#FFFFFF"
+        android:id="@+id/redditCount"
+        android:background="@drawable/reddit_button_bg"
         android:textColor="#ff5700"
-        android:layout_weight="1"
-        android:gravity="center" />
+        style="@style/social_count_button" />
 
 </LinearLayout>

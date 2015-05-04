@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hatena_bookmark_bg">#ff2c6ebd</color>
+    <color name="hatena_bookmark_bg_pressed">#ff225694</color>
+
+    <color name="twitter_bg">#ff55acee</color>
+    <color name="twitter_bg_pressed">#ff2795e9</color>
+
+    <color name="reddit_bg">#ffffff</color>
+    <color name="reddit_bg_pressed">#ffe6e6e6</color>
+</resources>
