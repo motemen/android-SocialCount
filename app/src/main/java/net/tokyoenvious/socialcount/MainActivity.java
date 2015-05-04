@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import net.tokyoenvious.socialcount.source.HatenaBookmark;
+import net.tokyoenvious.socialcount.source.Reddit;
 import net.tokyoenvious.socialcount.source.Twitter;
 
 import butterknife.ButterKnife;
@@ -26,6 +27,9 @@ public class MainActivity extends Activity {
 
     @InjectView(R.id.textViewTwitter)
     TextView twitterTextView;
+
+    @InjectView(R.id.textViewReddit)
+    TextView redditTextView;
 
     @Override
     protected void onPause() {
@@ -62,6 +66,12 @@ public class MainActivity extends Activity {
         AppObservable.bindActivity(this, new Twitter().fetchCount(url))
                 .subscribe(
                         count -> twitterTextView.setText(count.toString()),
+                        throwable -> Log.e("main", throwable.getMessage())
+                );
+
+        AppObservable.bindActivity(this, new Reddit().fetchCount(url))
+                .subscribe(
+                        count -> redditTextView.setText(count.toString()),
                         throwable -> Log.e("main", throwable.getMessage())
                 );
     }

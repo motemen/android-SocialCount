@@ -1,7 +1,4 @@
 <resources>
-    <string name="app_name">Social Count</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="defaultCount">-</string>
+    <string name="app_name">SocialCount</string>
+    <string name="default_count">-</string>
 </resources>
