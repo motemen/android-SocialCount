@@ -8,12 +8,29 @@
     tools:context=".MainActivity"
     >
 
-    <Button
-        android:text="@string/default_count"
-        android:id="@+id/hatenaBookmarkCount"
-        android:background="@drawable/hatena_bookmark_button_bg"
-        android:textColor="#FFFFFF"
-        style="@style/social_count_button" />
+    <RelativeLayout
+        android:orientation="vertical"
+        android:clickable="false"
+        style="@style/social_count_button">
+
+        <Button
+            android:id="@+id/hatenaBookmarkCount"
+            android:background="@drawable/hatena_bookmark_button_bg"
+            android:textColor="#FFFFFF"
+            style="@style/social_count_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+
+        <ImageView
+            android:id="@+id/hatenaBookmarkLogo"
+            android:src="@drawable/hatena_bookmark"
+            android:background="@drawable/hatena_bookmark_button_bg"
+            style="@style/social_count_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="Hatena Bookmark" />
+
+    </RelativeLayout>
 
     <Button
         android:text="@string/default_count"

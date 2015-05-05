@@ -1,11 +1,16 @@
 package net.tokyoenvious.socialcount;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +36,9 @@ public class MainActivity extends Activity {
     @InjectView(R.id.backgroundOverlay)
     LinearLayout backgroundOverlay;
 
+    @InjectView(R.id.hatenaBookmarkLogo)
+    ImageView hatenaBookmarkLogo;
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -50,18 +58,49 @@ public class MainActivity extends Activity {
         ButterKnife.inject(this);
 
         Intent intent = getIntent();
-        Log.d("action", intent.getAction());
         if (Intent.ACTION_SEND.equals(intent.getAction())) {
             url = intent.getStringExtra(Intent.EXTRA_TEXT);
         } else {
             url = null;
         }
 
+        Uri data = intent.getData();
+        Log.d("data", data == null ? "(null)" : data.toString());
+
         assert(url != null);
+
+        startFetches();
+    }
+
+    private void startFetches() {
+        int shortAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
+
+        hatenaBookmarkTextView.setAlpha(0f);
+        Log.d("startFetches", "alpha=0");
+
 
         AppObservable.bindActivity(this, new HatenaBookmark().fetchCount(url))
                 .subscribe(
-                        count -> hatenaBookmarkTextView.setText(count.toString()),
+                        count -> {
+                            Log.d("startFetches", "got");
+
+                            hatenaBookmarkTextView.animate()
+                                    .alpha(1f)
+                                    .setDuration(shortAnimationDuration)
+                                    .setListener(null);
+
+                            hatenaBookmarkLogo.animate()
+                                    .alpha(0f)
+                                    .setDuration(shortAnimationDuration)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            hatenaBookmarkLogo.setVisibility(View.GONE);
+                                        }
+                                    });
+
+                            hatenaBookmarkTextView.setText(count.toString());
+                        },
                         throwable -> Log.e("main", throwable.getMessage())
                 );
 
