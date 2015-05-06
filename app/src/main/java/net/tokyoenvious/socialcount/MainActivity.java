@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +15,8 @@ import net.tokyoenvious.socialcount.source.HatenaBookmark;
 import net.tokyoenvious.socialcount.source.Reddit;
 import net.tokyoenvious.socialcount.source.Source;
 import net.tokyoenvious.socialcount.source.Twitter;
+
+import java.util.regex.Matcher;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,7 +37,12 @@ public class MainActivity extends Activity {
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEND.equals(intent.getAction())) {
-            url = intent.getStringExtra(Intent.EXTRA_TEXT);
+            Matcher matcher = Patterns.WEB_URL.matcher(intent.getStringExtra(Intent.EXTRA_TEXT));
+            if (matcher.find()) {
+                url = matcher.group();
+            } else {
+                url = null;
+            }
         } else {
             url = "http://www.example.com/";
         }
@@ -134,7 +142,7 @@ public class MainActivity extends Activity {
                                     },
                                     throwable -> {
                                         Log.e("main", throwable.getMessage());
-                                        Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                             )
             );

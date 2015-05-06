@@ -2,16 +2,8 @@ package net.tokyoenvious.socialcount.source;
 
 import android.net.Uri;
 
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-
-import java.io.IOException;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class HatenaBookmark extends Source {
     public HatenaBookmark(String url) {
