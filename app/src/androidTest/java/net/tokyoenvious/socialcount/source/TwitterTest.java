@@ -11,7 +11,7 @@ import android.support.test.runner.AndroidJUnit4;
 public class TwitterTest {
     @Test
     public void fetchCountSync() throws java.io.IOException {
-        Integer count = new Twitter().fetchCountSync("http://www.example.com/");
+        Integer count = new Twitter("http://www.example.com/").fetchCountSync();
         assertTrue(count > 0);
     }
 }

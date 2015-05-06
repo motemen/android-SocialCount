@@ -12,8 +12,12 @@ import java.io.IOException;
 public class Twitter extends Source {
     private final Gson gson = new Gson();
 
+    public Twitter(String url) {
+        super(url);
+    }
+
     @Override
-    Integer fetchCountSync(String url) throws IOException {
+    Integer fetchCountSync() throws IOException {
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .authority("cdn.syndication.twitter.com")
@@ -34,5 +38,15 @@ public class Twitter extends Source {
     static class TwitterCount {
         Integer count;
         String url;
+    }
+
+    @Override
+    public Uri getUri() {
+        return new Uri.Builder()
+                .scheme("https")
+                .authority("twitter.com")
+                .path("/search")
+                .appendQueryParameter("q", url)
+                .build();
     }
 }

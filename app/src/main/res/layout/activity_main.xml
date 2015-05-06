@@ -10,8 +10,6 @@
 
     <RelativeLayout
         android:orientation="vertical"
-        android:clickable="false"
-        android:background="@drawable/hatena_bookmark_button_bg"
         style="@style/social_count_button">
 
         <Button
@@ -28,14 +26,13 @@
             style="@style/social_count_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:background="@drawable/hatena_bookmark_button_bg"
             android:contentDescription="Hatena Bookmark" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:orientation="vertical"
-        android:clickable="false"
-        android:background="@drawable/twitter_button_bg"
         style="@style/social_count_button">
 
         <Button
@@ -51,13 +48,12 @@
             style="@style/social_count_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:background="@drawable/twitter_button_bg"
             android:contentDescription="Twitter" />
     </RelativeLayout>
 
     <RelativeLayout
         android:orientation="vertical"
-        android:clickable="false"
-        android:background="@drawable/reddit_button_bg"
         style="@style/social_count_button">
 
         <Button
@@ -73,6 +69,7 @@
             style="@style/social_count_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:background="@drawable/reddit_button_bg"
             android:contentDescription="Reddit" />
     </RelativeLayout>
 

@@ -11,7 +11,7 @@ import android.support.test.runner.AndroidJUnit4;
 public class HatenaBookmarkTest {
     @Test
     public void fetchCountSync() throws java.io.IOException {
-        Integer count = new HatenaBookmark().fetchCountSync("http://www.example.com/");
+        Integer count = new HatenaBookmark("http://www.example.com/").fetchCountSync();
         assertTrue(count > 0);
     }
 }

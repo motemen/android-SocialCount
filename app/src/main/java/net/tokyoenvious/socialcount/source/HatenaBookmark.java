@@ -14,8 +14,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class HatenaBookmark extends Source {
+    public HatenaBookmark(String url) {
+        super(url);
+    }
+
     @Override
-    Integer fetchCountSync(String url) throws java.io.IOException {
+    Integer fetchCountSync() throws java.io.IOException {
         Uri uri = new Uri.Builder()
                 .scheme("http")
                 .authority("api.b.st-hatena.com")
@@ -28,6 +32,16 @@ public class HatenaBookmark extends Source {
                 .build();
 
         Response response = client.newCall(request).execute();
-        return Integer.decode(response.body().string());
+        String responseBody = response.body().string();
+        if (responseBody.isEmpty()) {
+            return 0;
+        } else {
+            return Integer.decode(responseBody);
+        }
+    }
+
+    @Override
+    public Uri getUri() {
+        return Uri.parse("http://b.hatena.ne.jp/entry.touch/" + url);
     }
 }

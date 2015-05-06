@@ -11,9 +11,14 @@ import java.io.IOException;
 
 public class Reddit extends Source {
     private final Gson gson = new Gson();
+    private RedditInfoResult result;
+
+    public Reddit(String url) {
+        super(url);
+    }
 
     @Override
-    Integer fetchCountSync(String url) throws IOException {
+    Integer fetchCountSync() throws IOException {
         Uri uri = new Uri.Builder()
                 .scheme("http")
                 .authority("www.reddit.com")
@@ -27,12 +32,30 @@ public class Reddit extends Source {
 
         Response response = client.newCall(request).execute();
 
-        RedditInfoResult res = gson.fromJson(response.body().charStream(), RedditInfoResult.class);
+        result = gson.fromJson(response.body().charStream(), RedditInfoResult.class);
         int totalScore = 0;
-        for (RedditInfoResult.RedditInfo.Child child: res.data.children) {
+        for (RedditInfoResult.RedditInfo.Child child: result.data.children) {
             totalScore += child.data.score;
         }
         return totalScore;
+    }
+
+    @Override
+    public Uri getUri() {
+        if (result != null && result.data.children.length == 1) {
+            return new Uri.Builder()
+                    .scheme("http")
+                    .authority("www.reddit.com")
+                    .path(result.data.children[0].data.permalink)
+                    .build();
+        } else {
+            return new Uri.Builder()
+                    .scheme("http")
+                    .authority("www.reddit.com")
+                    .path("/submit")
+                    .appendQueryParameter("url", url)
+                    .build();
+        }
     }
 
     static class RedditInfoResult {
@@ -46,6 +69,7 @@ public class Reddit extends Source {
 
                 static class Entry {
                     int score;
+                    String permalink;
                 }
             }
         }

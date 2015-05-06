@@ -4,53 +4,23 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.tokyoenvious.socialcount.source.HatenaBookmark;
 import net.tokyoenvious.socialcount.source.Reddit;
+import net.tokyoenvious.socialcount.source.Source;
 import net.tokyoenvious.socialcount.source.Twitter;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.android.app.AppObservable;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends Activity {
-    @InjectView(R.id.hatenaBookmarkCount)
-    TextView hatenaBookmarkTextView;
-
-    @InjectView(R.id.twitterCount)
-    TextView twitterTextView;
-
-    @InjectView(R.id.redditCount)
-    TextView redditTextView;
-
-    @InjectView(R.id.backgroundOverlay)
-    LinearLayout backgroundOverlay;
-
-    @InjectView(R.id.hatenaBookmarkLogo)
-    ImageView hatenaBookmarkLogo;
-
-    @InjectView(R.id.twitterLogo)
-    ImageView twitterLogo;
-
-    @InjectView(R.id.redditLogo)
-    ImageView redditLogo;
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        overridePendingTransition(0, R.anim.abc_slide_out_top);
-    }
-
     String url;
 
     @Override
@@ -69,7 +39,24 @@ public class MainActivity extends Activity {
             url = "http://www.example.com/";
         }
 
-        startFetchers();
+        initializeSources();
+    }
+
+    @Override
+    protected void onDestroy() {
+        fetchers.unsubscribe();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, R.anim.abc_slide_out_top);
+    }
+
+    @OnClick(R.id.backgroundOverlay)
+    public void onBackgroundOverlayClicked(View view) {
+        onBackPressed();
     }
 
     class ViewCrossfader {
@@ -105,96 +92,52 @@ public class MainActivity extends Activity {
 
     private CompositeSubscription fetchers = new CompositeSubscription();
 
-    private void startFetchers() {
-        int duration = getResources().getInteger(android.R.integer.config_longAnimTime);
-
-        ViewCrossfader hatenaBookmarkFader = new ViewCrossfader(hatenaBookmarkTextView, hatenaBookmarkLogo, duration);
-        ViewCrossfader twitterFader        = new ViewCrossfader(twitterTextView, twitterLogo, duration);
-        ViewCrossfader redditFader         = new ViewCrossfader(redditTextView, redditLogo, duration);
-
-        fetchers.add(
-                AppObservable.bindActivity(this, new HatenaBookmark().fetchCount(url))
-                        .subscribe(
-                                count -> {
-                                    hatenaBookmarkTextView.setText(count.toString());
-                                    hatenaBookmarkFader.start();
-                                },
-                                // TODO: toast
-                                throwable -> Log.e("main", throwable.getMessage())
-                        )
-        );
-
-        fetchers.add(
-                AppObservable.bindActivity(this, new Twitter().fetchCount(url))
-                        .subscribe(
-                                count -> {
-                                    twitterTextView.setText(count.toString());
-                                    twitterFader.start();
-                                },
-                                throwable -> Log.e("main", throwable.getMessage())
-                        )
-        );
-
-        fetchers.add(
-                AppObservable.bindActivity(this, new Reddit().fetchCount(url))
-                        .subscribe(
-                                count -> {
-                                    redditTextView.setText(count.toString());
-                                    redditFader.start();
-                                },
-                                throwable -> Log.e("main", throwable.getMessage())
-                        )
-        );
+    private void initializeSources() {
+        new SourceView<>(new HatenaBookmark(url), R.id.hatenaBookmarkCount, R.id.hatenaBookmarkLogo).start();
+        new SourceView<>(new Twitter(url), R.id.twitterCount, R.id.twitterLogo).start();
+        new SourceView<>(new Reddit(url), R.id.redditCount, R.id.redditLogo).start();
     }
 
-    @Override
-    protected void onDestroy() {
-        fetchers.unsubscribe();
+    class SourceView<T extends Source> {
+        T source;
+        TextView countView;
+        View placeholderView;
 
-        super.onDestroy();
-    }
+        SourceView(T source, int countViewId, int placeholderViewId) {
+            this.source = source;
+            this.countView = (TextView)MainActivity.this.findViewById(countViewId);
+            this.placeholderView = MainActivity.this.findViewById(placeholderViewId);
 
-    @OnClick(R.id.hatenaBookmarkCount)
-    public void showHatenaBookmark(View view) {
-        Intent hatenaBookmarkEntryIntent = new Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("http://b.hatena.ne.jp/entry.touch/" + url)
-        );
-        startActivity(hatenaBookmarkEntryIntent);
-    }
+            addEventListeners();
+        }
 
-    @OnClick(R.id.twitterCount)
-    public void showTwitter(View view) {
-        Intent twitterSearchIntent = new Intent(
-                Intent.ACTION_VIEW,
-                new Uri.Builder()
-                        .scheme("https")
-                        .authority("twitter.com")
-                        .path("/search")
-                        .appendQueryParameter("q", url)
-                        .build()
-        );
-        startActivity(twitterSearchIntent);
-    }
+        private void addEventListeners() {
+            this.countView.setOnClickListener(
+                    v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, source.getUri());
+                        startActivity(intent);
+                    }
+            );
+        }
 
-    @OnClick(R.id.redditCount)
-    public void showReddit(View view) {
-        // TODO: if submission was only one, open it
-        // TODO: URIs must go models
-        Intent redditSearchIntent = new Intent(
-                Intent.ACTION_VIEW,
-                new Uri.Builder()
-                        .scheme("http")
-                        .authority("www.reddit.com")
-                        .path("/submit")
-                        .appendQueryParameter("url", url)
-                        .build()
-        );
-        startActivity(redditSearchIntent);
-    }
+        public void start() {
+            int duration = getResources().getInteger(android.R.integer.config_longAnimTime);
 
-    @OnClick(R.id.backgroundOverlay)
-    public void onBackgroundOverlayClicked(View view) {
-        onBackPressed();
+            ViewCrossfader fader = new ViewCrossfader(countView, placeholderView, duration);
+
+            fetchers.add(
+                    AppObservable.bindActivity(MainActivity.this, source.fetchCount())
+                            .subscribe(
+                                    count -> {
+                                        countView.setText(count.toString());
+                                        fader.start();
+                                    },
+                                    throwable -> {
+                                        Log.e("main", throwable.getMessage());
+                                        Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                            )
+            );
+        }
     }
 }

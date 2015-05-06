@@ -2,6 +2,7 @@ package net.tokyoenvious.socialcount.source;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import android.net.Uri;
 import android.util.Log;
 
 import java.io.IOException;
@@ -11,16 +12,22 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-abstract class Source {
+public abstract class Source {
     protected final OkHttpClient client = new OkHttpClient();
 
-    public Observable<Integer> fetchCount(final String url) {
+    String url;
+
+    Source(String url) {
+        this.url = url;
+    }
+
+    public Observable<Integer> fetchCount() {
         return Observable.create(
                 (Subscriber<? super Integer> subscriber) -> {
                     Log.i(this.getClass().getName() + " fetchCount", url);
 
                     try {
-                        Integer count = fetchCountSync(url);
+                        Integer count = fetchCountSync();
                         subscriber.onNext(count);
                     } catch (IOException e) {
                         subscriber.onError(e);
@@ -30,5 +37,7 @@ abstract class Source {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    abstract Integer fetchCountSync(String url) throws IOException;
+    abstract Integer fetchCountSync() throws IOException;
+
+    abstract public Uri getUri();
 }
