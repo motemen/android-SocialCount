@@ -11,11 +11,12 @@
     <RelativeLayout
         android:orientation="vertical"
         android:clickable="false"
+        android:background="@drawable/hatena_bookmark_button_bg"
         style="@style/social_count_button">
 
         <Button
             android:id="@+id/hatenaBookmarkCount"
-            android:background="@drawable/hatena_bookmark_button_bg"
+            android:background="@android:color/transparent"
             android:textColor="#FFFFFF"
             style="@style/social_count_button"
             android:layout_alignParentLeft="true"
@@ -24,7 +25,6 @@
         <ImageView
             android:id="@+id/hatenaBookmarkLogo"
             android:src="@drawable/hatena_bookmark"
-            android:background="@drawable/hatena_bookmark_button_bg"
             style="@style/social_count_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
@@ -32,18 +32,46 @@
 
     </RelativeLayout>
 
-    <Button
-        android:text="@string/default_count"
-        android:id="@+id/twitterCount"
+    <RelativeLayout
+        android:orientation="vertical"
+        android:clickable="false"
         android:background="@drawable/twitter_button_bg"
-        android:textColor="#FFFFFF"
-        style="@style/social_count_button" />
+        style="@style/social_count_button">
 
-    <Button
-        android:text="@string/default_count"
-        android:id="@+id/redditCount"
+        <Button
+            android:text="@string/default_count"
+            android:id="@+id/twitterCount"
+            android:background="@android:color/transparent"
+            android:textColor="#FFFFFF"
+            style="@style/social_count_button" />
+
+        <ImageView
+            android:id="@+id/twitterLogo"
+            android:src="@drawable/twitter"
+            style="@style/social_count_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="Twitter" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:clickable="false"
         android:background="@drawable/reddit_button_bg"
-        android:textColor="#ff5700"
-        style="@style/social_count_button" />
+        style="@style/social_count_button">
+        <Button
+            android:text="@string/default_count"
+            android:id="@+id/redditCount"
+            android:background="@android:color/transparent"
+            android:textColor="#ff5700"
+            style="@style/social_count_button" />
+        <ImageView
+            android:id="@+id/redditLogo"
+            android:src="@drawable/reddit"
+            style="@style/social_count_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="Reddit" />
+    </RelativeLayout>
 
 </LinearLayout>

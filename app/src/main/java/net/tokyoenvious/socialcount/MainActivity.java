@@ -5,9 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.android.app.AppObservable;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends Activity {
     @InjectView(R.id.hatenaBookmarkCount)
@@ -38,6 +37,12 @@ public class MainActivity extends Activity {
 
     @InjectView(R.id.hatenaBookmarkLogo)
     ImageView hatenaBookmarkLogo;
+
+    @InjectView(R.id.twitterLogo)
+    ImageView twitterLogo;
+
+    @InjectView(R.id.redditLogo)
+    ImageView redditLogo;
 
     @Override
     public void onBackPressed() {
@@ -61,60 +66,92 @@ public class MainActivity extends Activity {
         if (Intent.ACTION_SEND.equals(intent.getAction())) {
             url = intent.getStringExtra(Intent.EXTRA_TEXT);
         } else {
-            url = null;
+            url = "http://www.example.com/";
         }
 
-        Uri data = intent.getData();
-        Log.d("data", data == null ? "(null)" : data.toString());
-
-        assert(url != null);
-
-        startFetches();
+        startFetchers();
     }
 
-    private void startFetches() {
-        int shortAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
+    class ViewCrossfader {
+        View toBeShown;
+        View toBeHidden;
+        int duration;
 
-        hatenaBookmarkTextView.setAlpha(0f);
-        Log.d("startFetches", "alpha=0");
+        ViewCrossfader(View toBeShown, View toBeHidden, int duration) {
+            this.toBeShown  = toBeShown;
+            this.toBeHidden = toBeHidden;
+            this.duration   = duration;
 
+            toBeShown.setAlpha(0f);
+        }
 
-        AppObservable.bindActivity(this, new HatenaBookmark().fetchCount(url))
-                .subscribe(
-                        count -> {
-                            Log.d("startFetches", "got");
+        void start() {
+            toBeShown.animate()
+                    .alpha(1f)
+                    .setDuration(duration)
+                    .setListener(null);
 
-                            hatenaBookmarkTextView.animate()
-                                    .alpha(1f)
-                                    .setDuration(shortAnimationDuration)
-                                    .setListener(null);
+            toBeHidden.animate()
+                    .alpha(0f)
+                    .setDuration(duration)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            toBeHidden.setVisibility(View.GONE);
+                        }
+                    });
+        }
+    }
 
-                            hatenaBookmarkLogo.animate()
-                                    .alpha(0f)
-                                    .setDuration(shortAnimationDuration)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            hatenaBookmarkLogo.setVisibility(View.GONE);
-                                        }
-                                    });
+    private CompositeSubscription fetchers = new CompositeSubscription();
 
-                            hatenaBookmarkTextView.setText(count.toString());
-                        },
-                        throwable -> Log.e("main", throwable.getMessage())
-                );
+    private void startFetchers() {
+        int duration = getResources().getInteger(android.R.integer.config_longAnimTime);
 
-        AppObservable.bindActivity(this, new Twitter().fetchCount(url))
-                .subscribe(
-                        count -> twitterTextView.setText(count.toString()),
-                        throwable -> Log.e("main", throwable.getMessage())
-                );
+        ViewCrossfader hatenaBookmarkFader = new ViewCrossfader(hatenaBookmarkTextView, hatenaBookmarkLogo, duration);
+        ViewCrossfader twitterFader        = new ViewCrossfader(twitterTextView, twitterLogo, duration);
+        ViewCrossfader redditFader         = new ViewCrossfader(redditTextView, redditLogo, duration);
 
-        AppObservable.bindActivity(this, new Reddit().fetchCount(url))
-                .subscribe(
-                        count -> redditTextView.setText(count.toString()),
-                        throwable -> Log.e("main", throwable.getMessage())
-                );
+        fetchers.add(
+                AppObservable.bindActivity(this, new HatenaBookmark().fetchCount(url))
+                        .subscribe(
+                                count -> {
+                                    hatenaBookmarkTextView.setText(count.toString());
+                                    hatenaBookmarkFader.start();
+                                },
+                                // TODO: toast
+                                throwable -> Log.e("main", throwable.getMessage())
+                        )
+        );
+
+        fetchers.add(
+                AppObservable.bindActivity(this, new Twitter().fetchCount(url))
+                        .subscribe(
+                                count -> {
+                                    twitterTextView.setText(count.toString());
+                                    twitterFader.start();
+                                },
+                                throwable -> Log.e("main", throwable.getMessage())
+                        )
+        );
+
+        fetchers.add(
+                AppObservable.bindActivity(this, new Reddit().fetchCount(url))
+                        .subscribe(
+                                count -> {
+                                    redditTextView.setText(count.toString());
+                                    redditFader.start();
+                                },
+                                throwable -> Log.e("main", throwable.getMessage())
+                        )
+        );
+    }
+
+    @Override
+    protected void onDestroy() {
+        fetchers.unsubscribe();
+
+        super.onDestroy();
     }
 
     @OnClick(R.id.hatenaBookmarkCount)
@@ -143,6 +180,7 @@ public class MainActivity extends Activity {
     @OnClick(R.id.redditCount)
     public void showReddit(View view) {
         // TODO: if submission was only one, open it
+        // TODO: URIs must go models
         Intent redditSearchIntent = new Intent(
                 Intent.ACTION_VIEW,
                 new Uri.Builder()
