@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.tokyoenvious.socialcount.source.HatenaBookmark;
+import net.tokyoenvious.socialcount.source.Pocket;
 import net.tokyoenvious.socialcount.source.Reddit;
 import net.tokyoenvious.socialcount.source.Source;
 import net.tokyoenvious.socialcount.source.Twitter;
@@ -104,6 +105,7 @@ public class MainActivity extends Activity {
         new SourceView<>(new HatenaBookmark(url), R.id.hatenaBookmarkCount, R.id.hatenaBookmarkLogo).start();
         new SourceView<>(new Twitter(url), R.id.twitterCount, R.id.twitterLogo).start();
         new SourceView<>(new Reddit(url), R.id.redditCount, R.id.redditLogo).start();
+        new SourceView<>(new Pocket(url), R.id.pocketCount, R.id.pocketLogo).start();
     }
 
     class SourceView<T extends Source> {

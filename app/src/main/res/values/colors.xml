@@ -8,4 +8,7 @@
 
     <color name="reddit_bg">#ffffff</color>
     <color name="reddit_bg_pressed">#ffe6e6e6</color>
+
+    <color name="pocket_bg">#ffed4055</color>
+    <color name="pocket_bg_pressed">#ffe4162f</color>
 </resources>

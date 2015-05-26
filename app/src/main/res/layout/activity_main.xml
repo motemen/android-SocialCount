@@ -73,4 +73,23 @@
             android:contentDescription="Reddit" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:orientation="vertical"
+        style="@style/social_count_button">
+
+        <Button
+            android:text="@string/default_count"
+            android:id="@+id/pocketCount"
+            android:background="@drawable/pocket_button_bg"
+            android:textColor="#ffffff"
+            style="@style/social_count_button" />
+
+        <ImageView
+            android:id="@+id/pocketLogo"
+            style="@style/social_count_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/pocket_button_bg"
+            android:contentDescription="Pocket" />
+    </RelativeLayout>
 </LinearLayout>
