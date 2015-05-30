@@ -2,6 +2,7 @@ package net.tokyoenvious.socialcount.source;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
@@ -39,5 +40,5 @@ public abstract class Source {
 
     abstract Integer fetchCountSync() throws IOException;
 
-    abstract public Uri getUri();
+    abstract public Intent makeActionIntent();
 }

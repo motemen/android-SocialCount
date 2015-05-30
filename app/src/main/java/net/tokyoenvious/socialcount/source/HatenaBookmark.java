@@ -1,5 +1,6 @@
 package net.tokyoenvious.socialcount.source;
 
+import android.content.Intent;
 import android.net.Uri;
 
 import com.squareup.okhttp.Request;
@@ -33,7 +34,10 @@ public class HatenaBookmark extends Source {
     }
 
     @Override
-    public Uri getUri() {
-        return Uri.parse("http://b.hatena.ne.jp/entry.touch/" + url);
+    public Intent makeActionIntent() {
+        return new Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("http://b.hatena.ne.jp/entry.touch/" + url)
+        );
     }
 }

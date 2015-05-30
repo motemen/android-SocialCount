@@ -124,7 +124,7 @@ public class MainActivity extends Activity {
         private void addEventListeners() {
             this.countView.setOnClickListener(
                     v -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, source.getUri());
+                        Intent intent = source.makeActionIntent();
                         startActivity(intent);
                     }
             );

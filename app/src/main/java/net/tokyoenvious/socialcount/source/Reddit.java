@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import android.content.Intent;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -40,8 +41,7 @@ public class Reddit extends Source {
         return totalScore;
     }
 
-    @Override
-    public Uri getUri() {
+    private Uri buildActionUri() {
         if (result != null && result.data.children.length == 1) {
             return new Uri.Builder()
                     .scheme("http")
@@ -56,6 +56,14 @@ public class Reddit extends Source {
                     .appendQueryParameter("url", url)
                     .build();
         }
+    }
+
+    @Override
+    public Intent makeActionIntent() {
+        return new Intent(
+            Intent.ACTION_VIEW,
+            buildActionUri()
+        );
     }
 
     static class RedditInfoResult {

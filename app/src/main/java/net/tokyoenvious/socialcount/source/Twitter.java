@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import android.content.Intent;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -40,13 +41,13 @@ public class Twitter extends Source {
         String url;
     }
 
-    @Override
-    public Uri getUri() {
-        return new Uri.Builder()
+    public Intent makeActionIntent() {
+        Uri uri = new Uri.Builder()
                 .scheme("https")
                 .authority("twitter.com")
                 .path("/search")
                 .appendQueryParameter("q", url)
                 .build();
+        return new Intent(Intent.ACTION_VIEW, uri);
     }
 }

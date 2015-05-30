@@ -3,6 +3,7 @@ package net.tokyoenvious.socialcount.source;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import android.content.Intent;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -38,7 +39,10 @@ public class Pocket extends Source {
     }
 
     @Override
-    public Uri getUri() {
-        return null;
+    public Intent makeActionIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.ideashower.readitlater.pro", "com.ideashower.readitlater.activity.AddActivity");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        return intent;
     }
 }
