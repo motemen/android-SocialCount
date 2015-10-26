@@ -25,8 +25,6 @@ import rx.android.app.AppObservable
 import rx.subscriptions.CompositeSubscription
 
 class MainActivity : Activity() {
-    internal var url: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,19 +33,15 @@ class MainActivity : Activity() {
 
         ButterKnife.inject(this)
 
-        val intent = intent
         if (Intent.ACTION_SEND == intent.action) {
             val matcher = Patterns.WEB_URL.matcher(intent.getStringExtra(Intent.EXTRA_TEXT))
             if (matcher.find()) {
-                url = matcher.group()
-            } else {
-                url = null
+                initializeSources(matcher.group())
+                return
             }
-        } else {
-            url = "http://www.example.com/"
         }
 
-        initializeSources()
+        // TODO: die
     }
 
     override fun onDestroy() {
@@ -85,7 +79,7 @@ class MainActivity : Activity() {
 
     private val fetchers = CompositeSubscription()
 
-    private fun initializeSources() {
+    private fun initializeSources(url: String) {
         SourceView(HatenaBookmark(url), R.id.hatenaBookmarkCount, R.id.hatenaBookmarkLogo).start()
         SourceView(Twitter(url), R.id.twitterCount, R.id.twitterLogo).start()
         SourceView(Reddit(url), R.id.redditCount, R.id.redditLogo).start()
@@ -122,8 +116,8 @@ class MainActivity : Activity() {
                                 fader.start()
                             }
                     ) { throwable ->
-                        Log.e("main", throwable.getMessage())
-                        Toast.makeText(this@MainActivity, throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                        Log.e("main", throwable.message)
+                        Toast.makeText(this@MainActivity, throwable.message, Toast.LENGTH_SHORT).show()
                     })
         }
     }

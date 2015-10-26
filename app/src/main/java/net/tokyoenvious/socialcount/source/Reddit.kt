@@ -23,16 +23,17 @@ class Reddit(url: String) : Source(url) {
         val response = client.newCall(request).execute()
 
         result = gson.fromJson(response.body().charStream(), RedditInfoResult::class.java)
-        var totalScore = 0
-        for (child in result!!.data.children) {
-            totalScore += child.data.score
+        val totalScore = result?.data?.children?.sumBy {
+            child -> child.data?.score ?: 0
         }
         return totalScore
     }
 
     private fun buildActionUri(): Uri {
-        if (result != null && result!!.data.children.size() == 1) {
-            return Uri.Builder().scheme("http").authority("www.reddit.com").path(result!!.data.children[0].data.permalink).build()
+        val itemPermalink: String? = result?.data?.children?.getOrNull(0)?.data?.permalink
+
+        if (itemPermalink != null) {
+            return Uri.Builder().scheme("http").authority("www.reddit.com").path(itemPermalink).build()
         } else {
             return Uri.Builder().scheme("http").authority("www.reddit.com").path("/submit").appendQueryParameter("url", url).build()
         }
@@ -45,17 +46,17 @@ class Reddit(url: String) : Source(url) {
     }
 
     internal class RedditInfoResult {
-        var data: RedditInfo
+        var data: RedditInfo? = null
 
         internal class RedditInfo {
-            var children: Array<Child>
+            var children: Array<Child>? = null
 
             internal class Child {
-                var data: Entry
+                var data: Entry? = null
 
                 internal class Entry {
                     var score: Int = 0
-                    var permalink: String
+                    var permalink: String? = null
                 }
             }
         }

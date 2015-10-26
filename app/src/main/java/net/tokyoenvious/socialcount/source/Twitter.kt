@@ -27,7 +27,7 @@ class Twitter(url: String) : Source(url) {
 
     internal class TwitterCount {
         var count: Int? = null
-        var url: String
+        var url: String? = null
     }
 
     override fun makeActionIntent(): Intent {
